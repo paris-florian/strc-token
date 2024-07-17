@@ -487,10 +487,10 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
 
 contract StarChainToken is Ownable, ERC20 {
 
-    uint256 _totalSupply ;
+    uint256 _tTotal ;
 
     constructor() ERC20("StarChain Token", "STRC") {
-        _totalSupply = 5 *10 ** 8 * 10 ** 18;
-        _mint(msg.sender, _totalSupply);
+        _tTotal = 5 *10 ** 8 * 10 ** 18;
+        _mint(msg.sender, _tTotal);
     }
 }
