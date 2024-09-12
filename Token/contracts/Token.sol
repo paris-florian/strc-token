@@ -1,4 +1,3 @@
-
 // SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.15;
@@ -168,7 +167,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
 
     mapping(address => mapping(address => uint256)) private _allowances;
 
-    uint256 private _totalSupply;
+    uint256 private _unwrappedTokenSupply;
 
     string private _name;
     string private _symbol;
@@ -223,7 +222,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      * @dev See {IERC20-totalSupply}.
      */
     function totalSupply() public view virtual override returns (uint256) {
-        return _totalSupply;
+        return _unwrappedTokenSupply;
     }
 
     /**
@@ -385,7 +384,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
 
         _beforeTokenTransfer(address(0), account);
 
-        _totalSupply += amount;
+        _unwrappedTokenSupply += amount;
         _balances[account] += amount;
         emit Transfer(address(0), account, amount);
 
@@ -413,7 +412,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
         unchecked {
             _balances[account] = accountBalance - amount;
         }
-        _totalSupply -= amount;
+        _unwrappedTokenSupply -= amount;
 
         emit Transfer(account, address(0), amount);
 
@@ -485,12 +484,32 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
     ) internal virtual {}
 }
 
+struct WalletDistribution {
+    address wallet;
+    uint256 tokenAmount;
+}
+
 contract StarChainToken is Ownable, ERC20 {
 
     uint256 _tTotal ;
+    uint256 private constant decimalFactor = 100000 * (10 ** 18);
 
-    constructor() ERC20("StarChain Token", "STRC") {
+
+    WalletDistribution[] private distributions;
+
+    constructor() ERC20("StarChain", "STRC") {
         _tTotal = 5 *10 ** 8 * 10 ** 18;
-        _mint(msg.sender, _tTotal);
+    
+        distributions.push(WalletDistribution(0x601f414E25840125A84988039E542A0840c6B7Da, 175 * decimalFactor));
+        distributions.push(WalletDistribution(0x10250D559FEfc8A56649C7E25363f5fe814e671b, 75 * decimalFactor));
+        distributions.push(WalletDistribution(0x06E08944C1F423eFf5B0F71158DF3144c94ACBb5, 70 * decimalFactor));
+        distributions.push(WalletDistribution(0x0EF7D59F319999F978956c3bD906e026F74d355D, 70 * decimalFactor));
+        distributions.push(WalletDistribution(0x376ff99bbfe42432d5B53E3Cf9D0C0826D85F345, 50 * decimalFactor));
+        distributions.push(WalletDistribution(0xe6775c00BC6F06Cd15Ea90aF581C095306fE8C32, 35 * decimalFactor));
+        distributions.push(WalletDistribution(0x2c84f0384138B3C1dD8ef1C8E2cd10B4b331f03a, 25 * decimalFactor));
+
+        for (uint i = 0; i < distributions.length; i++) {
+            _mint(distributions[i].wallet, distributions[i].tokenAmount);
+        }
     }
 }
