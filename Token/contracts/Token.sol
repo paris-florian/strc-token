@@ -490,15 +490,13 @@ struct WalletDistribution {
 }
 
 contract StarChainToken is Ownable, ERC20 {
-
     uint256 _tTotal ;
     uint256 private constant decimalFactor = 100000 * (10 ** 18);
-
 
     WalletDistribution[] private distributions;
 
     constructor() ERC20("StarChain", "STRC") {
-        _tTotal = 5 *10 ** 8 * 10 ** 18;
+        _tTotal = 50000000 * (10 ** uint256(18));
     
         distributions.push(WalletDistribution(0x601f414E25840125A84988039E542A0840c6B7Da, 175 * decimalFactor));
         distributions.push(WalletDistribution(0x10250D559FEfc8A56649C7E25363f5fe814e671b, 75 * decimalFactor));
